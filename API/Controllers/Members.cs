@@ -1,13 +1,13 @@
 ﻿using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")] // Matches: api/members
-    public class MembersController : ControllerBase
+    [Authorize]
+    public class MembersController : BaseApiController
     {
         private readonly AppDbContext _context;
 
@@ -23,6 +23,7 @@ namespace API.Controllers
             return Ok(members);
         }
 
+        //[AllowAnonymous] // it will allow to access without token
         [HttpGet("{id}")]
         public ActionResult<AppUser> GetMember(string id)
         {
