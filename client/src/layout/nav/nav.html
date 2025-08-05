@@ -21,6 +21,11 @@
                 <a routerLink="/errors" routerLinkActive="text-accent">Error</a>
             }           
         </nav>
+
+        @if(busyService.busyRequestCount() > 0){
+            <span class="loading loading-spinner text-accent"></span>
+        }
+
         <div class="flex align-middle ml-auto gap-3">
 
             <div class="dropdown mr-5 dropdown-end">
@@ -49,7 +54,7 @@
                     <span class="text-white">{{user?.displayName}}</span>
                 </div>
                 <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                  <li><a>Edit profile</a></li>
+                  <li><a routerLink="/members/{{user.id}}">Edit profile</a></li>
                   <li><a (click)="logout()">Logout</a></li>
                 </ul>
               </div>
