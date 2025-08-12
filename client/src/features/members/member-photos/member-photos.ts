@@ -2,7 +2,6 @@ import { Component, inject, signal } from '@angular/core';
 import { MemberService } from '../../../core/services/member-service';
 import { ActivatedRoute } from '@angular/router';
 import { Member, Photo } from '../../../types/member';
-import { AsyncPipe } from '@angular/common';
 import { AccountService } from '../../../core/services/account-service';
 import { User } from '../../../types/user';
 import { ImageUpload } from "../../../shared/image-upload/image-upload";
@@ -24,6 +23,7 @@ export class MemberPhotos {
 
   ngOnInit(): void {
     const memberId = this.route.parent?.snapshot.paramMap.get('id');
+    console.log(memberId)
     if (memberId) {
       this.memberService.getMemberPhotos(memberId).subscribe({
         next: photos => this.photos.set(photos)
