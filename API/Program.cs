@@ -1,5 +1,6 @@
 using API.Data;
 using API.Entities;
+using API.Helpers;
 using API.Interfaces;
 using API.Middleware;
 using API.Services;
@@ -24,8 +25,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add services for dependency injection
 builder.Services.AddScoped<ITokenService, TokenService>();
 
+// Add services for cloudinary photo management
+builder.Services.AddScoped<IPhotoService, PhotoService>();
+
 // Add Identity services
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+
+// Add services for cloudinary
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+
 // Add authentication with JWT Bearer
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
