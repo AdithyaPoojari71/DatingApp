@@ -31,6 +31,8 @@ builder.Services.AddScoped<IPhotoService, PhotoService>();
 // Add Identity services
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 
+// Add Identity services
+builder.Services.AddScoped<LogUserActivity>();
 // Add services for cloudinary
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
