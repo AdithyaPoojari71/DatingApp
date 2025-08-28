@@ -30,6 +30,7 @@ builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 // Add Identity services
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRespository>();
 
 builder.Services.AddScoped<ILikeRepository, LikesRepository>();
 

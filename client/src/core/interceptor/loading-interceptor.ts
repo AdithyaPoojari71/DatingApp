@@ -33,8 +33,8 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     invalidateCache('/likes')
   }
 
-  if (req.method.includes('POST') && req.url.includes('/messages')) {
-    invalidateCache('/messages')
+  if (req.method.includes('POST') && req.url.includes('/message')) {
+    invalidateCache('/message')
   }
 
   if (req.method.includes('POST') && req.url.includes('/add-photo')) {
