@@ -1,13 +1,16 @@
 ﻿using API.Entities;
 using API.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace API.Services
 {
-    public class TokenService(IConfiguration config) : ITokenService
+    public class TokenService(IConfiguration config, UserManager<AppUser> userManager) : ITokenService
     {
-        public string GetToken(AppUser user)
+
+        public async Task<string> GetToken(AppUser user)
         {
             var tokenKey = config["TokenKey"] ?? throw new Exception("Cannot get token key");
             // Validate the token key
@@ -26,15 +29,18 @@ namespace API.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.Email, user.Email !)
             };
+
+            var roles = userManager.GetRolesAsync(user).Result;
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddMinutes(7),
                 SigningCredentials = creds
             };
 
@@ -42,5 +48,12 @@ namespace API.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+
+        public string GenerateRefreshToken()
+        {
+            var randomNumber = RandomNumberGenerator.GetBytes(64);
+            return Convert.ToBase64String(randomNumber);
+        }
+
     }
 }

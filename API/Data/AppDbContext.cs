@@ -1,13 +1,14 @@
 ﻿using API.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System.Security.Cryptography.X509Certificates;
 
 namespace API.Data
 {
-    public class AppDbContext(DbContextOptions options) : DbContext(options)
+    public class AppDbContext(DbContextOptions options) : IdentityDbContext<AppUser>(options)
     {
-        public DbSet<AppUser> Users { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<MemberLike> Likes { get; set; }
@@ -17,6 +18,15 @@ namespace API.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Seed roles into the database
+            modelBuilder.Entity<IdentityRole>()
+            .HasData(
+                new IdentityRole { Id = "Member-id", Name = "Member", NormalizedName = "MEMBER" },
+                new IdentityRole { Id = "Admin-id", Name = "Admin", NormalizedName = "ADMIN" },
+                new IdentityRole { Id = "moderator-id", Name = "Moderator", NormalizedName = "MODERATOR" }
+            );
+
+            // Configure the relationships for the Message entity
             modelBuilder.Entity<Message>()
                 .HasOne(u => u.Recipient)
                 .WithMany(m => m.MessagesReceived)
