@@ -15,11 +15,11 @@ namespace API.Interfaces
         Task<IReadOnlyList<MessageDto>> GetMessageThread(string currentMemberId, string recipientId);
 
         Task<bool> SaveAllAsync();
-        //void AddGroup(Group group);
-        //Task RemoveConnection(string connectionId);
-        //Task<Connection?> GetConnection(string connectionId);
-        //Task<Group?> GetMessageGroup(string groupName);
-        //Task<Group?> GetGroupForConnection(string connectionId);
+        void AddGroup(Entities.Group group);
+        Task RemoveConnection(string connectionId);
+        Task<Entities.Connection?> GetConnection(string connectionId);
+        Task<Entities.Group?> GetMessageGroup(string groupName);
+        Task<Entities.Group?> GetGroupForConnection(string connectionId);
 
 
     }

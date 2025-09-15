@@ -1,10 +1,11 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { AccountService } from './account-service';
 import { ToastService } from './toast-service';
 import { PaginatedResult } from '../../types/pagination';
 import { Message } from '../../types/message';
+import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
 
 @Injectable({
   providedIn: 'root'
@@ -15,39 +16,39 @@ export class MessageService {
   private http = inject(HttpClient);
   private accountService = inject(AccountService);
   private toast = inject(ToastService);
-  // private hubConnection?: HubConnection;
-  // messageThread = signal<Message[]>([]);
+  private hubConnection?: HubConnection;
+  messageThread = signal<Message[]>([]);
 
-  // createHubConnection(otherUserId: string) {
-  //   const currentUser = this.accountService.currentUser();
-  //   if (!currentUser) return;
-  //   this.hubConnection = new HubConnectionBuilder()
-  //     .withUrl(this.hubUrl + 'messages?userId=' + otherUserId, {
-  //       accessTokenFactory: () => currentUser.token
-  //     })
-  //     .withAutomaticReconnect()
-  //     .build();
+  createHubConnection(otherUserId: string) {
+    const currentUser = this.accountService.currentUser();
+    if (!currentUser) return;
+    this.hubConnection = new HubConnectionBuilder()
+      .withUrl(this.hubUrl + 'messages?userId=' + otherUserId, {
+        accessTokenFactory: () => currentUser.token
+      })
+      .withAutomaticReconnect()
+      .build();
 
-  //   this.hubConnection.start().catch(error => console.log(error));
+    this.hubConnection.start().catch(error => console.log(error));
 
-  //   this.hubConnection.on('ReceiveMessageThread', (messages: Message[]) => {
-  //     this.messageThread.set(messages.map(message => ({
-  //         ...message,
-  //         currentUserSender: message.senderId !== otherUserId
-  //       })))
-  //   });
+    this.hubConnection.on('ReceiveMessageThread', (messages: Message[]) => {
+      this.messageThread.set(messages.map(message => ({
+          ...message,
+          currentUserSender: message.senderId !== otherUserId
+        })))
+    });
 
-  //   this.hubConnection.on('NewMessage', (message: Message) => {
-  //     message.currentUserSender = message.senderId === currentUser.id;
-  //     this.messageThread.update(messages => [...messages, message])
-  //   });
-  // }
+    this.hubConnection.on('NewMessage', (message: Message) => {
+      message.currentUserSender = message.senderId === currentUser.id;
+      this.messageThread.update(messages => [...messages, message])
+    });
+  }
 
-  // stopHubConnection() {
-  //   if (this.hubConnection?.state === HubConnectionState.Connected) {
-  //     this.hubConnection.stop().catch(error => console.log(error))
-  //   }
-  // }
+  stopHubConnection() {
+    if (this.hubConnection?.state === HubConnectionState.Connected) {
+      this.hubConnection.stop().catch(error => console.log(error))
+    }
+  }
 
   getMessages(container: string, pageNumber: number, pageSize: number) {
     let params = new HttpParams();
@@ -64,8 +65,8 @@ export class MessageService {
   }
 
   sendMessage(recipientId: string, content: string) {
-    //return this.hubConnection?.invoke('SendMessage', {recipientId, content})
-    return this.http.post<Message>(this.baseUrl + 'message', {recipientId,content})
+    return this.hubConnection?.invoke('SendMessage', {recipientId, content})
+    //return this.http.post<Message>(this.baseUrl + 'message', {recipientId,content})
   }
 
   deleteMessage(id: string) {
