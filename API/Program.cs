@@ -29,11 +29,12 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 // Add services for cloudinary photo management
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 
-// Add Identity services
+//// Add Identity services
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRespository>();
-
 builder.Services.AddScoped<ILikeRepository, LikesRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 // Add Identity services
 builder.Services.AddScoped<LogUserActivity>();
