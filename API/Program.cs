@@ -107,9 +107,16 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors("AllowAngularApp");
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapControllers();
 app.MapHub<PresenceHub>("/hubs/presence");
 app.MapHub<MessageHub>("/hubs/messages");
+
+// Fallback route to serve the Angular app for any unmatched routes
+app.MapFallbackToController("Index", "Fallback");
 
 // Seed the database with initial data
 using var scope = app.Services.CreateScope();

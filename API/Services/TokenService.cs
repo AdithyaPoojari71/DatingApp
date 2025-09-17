@@ -10,7 +10,7 @@ namespace API.Services
     public class TokenService(IConfiguration config, UserManager<AppUser> userManager) : ITokenService
     {
 
-        public async Task<string> GetToken(AppUser user)
+        public Task<string> GetToken(AppUser user)
         {
             var tokenKey = config["TokenKey"] ?? throw new Exception("Cannot get token key");
             // Validate the token key
@@ -46,7 +46,7 @@ namespace API.Services
 
             var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            return Task.FromResult(tokenHandler.WriteToken(token));
         }
 
         public string GenerateRefreshToken()
