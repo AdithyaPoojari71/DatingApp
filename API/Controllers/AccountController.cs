@@ -33,34 +33,35 @@ namespace API.Controllers
             };
 
             var result = await userManager.CreateAsync(user, registerDto.Password);
+
             if (!result.Succeeded)
             {
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError(error.Code, error.Description);
+                    ModelState.AddModelError("identity", error.Description);
                 }
+
                 return ValidationProblem();
             }
 
             await userManager.AddToRoleAsync(user, "Member");
 
             await SetRefreshTokenCookie(user);
+
             return await user.ToDto(tokenService);
         }
 
         [HttpPost("login")] //api/account/login
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            // Validate the model state
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var user = userManager.FindByEmailAsync(loginDto.Email).Result;
+            var user = await userManager.FindByEmailAsync(loginDto.Email);
+
             if (user == null) return Unauthorized("Invalid email address");
 
             var result = await userManager.CheckPasswordAsync(user, loginDto.Password);
+
             if (!result) return Unauthorized("Invalid password");
+
             await SetRefreshTokenCookie(user);
 
             return await user.ToDto(tokenService);
@@ -70,13 +71,16 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
-            if (refreshToken == null) return Unauthorized("No refresh token provided");
+            if (refreshToken == null) return NoContent();
 
             var user = await userManager.Users
-                .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken && u.RefreshTokenExpiryTime > DateTime.UtcNow);
+                .FirstOrDefaultAsync(x => x.RefreshToken == refreshToken
+                    && x.RefreshTokenExpiry > DateTime.UtcNow);
 
-            if (user == null) return Unauthorized("Invalid or expired refresh token");
+            if (user == null) return Unauthorized();
+
             await SetRefreshTokenCookie(user);
+
             return await user.ToDto(tokenService);
 
         }
@@ -85,14 +89,14 @@ namespace API.Controllers
         {
             var refreshToken = tokenService.GenerateRefreshToken();
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
             await userManager.UpdateAsync(user);
 
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.None,
+                SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(7)
             };
 
@@ -104,11 +108,11 @@ namespace API.Controllers
         public async Task<ActionResult> Logout()
         {
             await userManager.Users
-                .Where(x => x.Id == User.getmemberId())
-                .ExecuteUpdateAsync(setters => setters
-                    .SetProperty(x => x.RefreshToken, _ => null)
-                    .SetProperty(x => x.RefreshTokenExpiry, _ => null)
-                    );
+            .Where(x => x.Id == User.getmemberId())
+            .ExecuteUpdateAsync(setters => setters
+                .SetProperty(x => x.RefreshToken, _ => null)
+                .SetProperty(x => x.RefreshTokenExpiry, _ => null)
+                );
 
             Response.Cookies.Delete("refreshToken");
 

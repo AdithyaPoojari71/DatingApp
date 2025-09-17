@@ -48,6 +48,7 @@ export class AccountService {
     setInterval(() =>{
       this.http.post<User>(this.baseurl + 'account/refresh-token',{},{withCredentials: true}).subscribe({
         next: user =>{
+          console.log(user)
           this.setCurrentUser(user)
         },
         error:() =>{

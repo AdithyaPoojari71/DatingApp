@@ -14,7 +14,7 @@ namespace API.Extensions
                 DisplayName = user.DisplayName,
                 Email = user.Email!,
                 ImageUrl = user.ImageUrl,
-                Token = await tokenService.GetToken(user)
+                Token = await tokenService.CreateToken(user)
             };
         }
     }
