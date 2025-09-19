@@ -1,4 +1,5 @@
-﻿using API.Extensions;
+﻿using API.Data;
+using API.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;

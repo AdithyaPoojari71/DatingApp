@@ -6,6 +6,8 @@ import { ToastService } from '../../core/services/toast-service';
 import { themes } from '../them';
 import { BusyService } from '../../core/services/busy-service';
 import { HasRole } from '../../shared/directives/has-role';
+import { MessageService } from '../../core/services/message-service';
+import { PresenceSerive } from '../../core/services/presence-serive';
 
 @Component({
   selector: 'app-nav',
@@ -16,6 +18,8 @@ import { HasRole } from '../../shared/directives/has-role';
 export class Nav implements OnInit{
   protected accountService = inject(AccountService);
   protected busyService = inject(BusyService);
+  protected messageService = inject(MessageService);
+  protected presenceService = inject(PresenceSerive);
   protected router = inject(Router);
   private toast = inject(ToastService);
   protected creds: any = {}
@@ -24,6 +28,7 @@ export class Nav implements OnInit{
   protected loading = signal(false);
   ngOnInit(): void {
     document.documentElement.setAttribute('data-theme',this.selectedTheme());
+    this.messageService.getUnreadMsgCount();   
   }
 
 
@@ -50,7 +55,6 @@ export class Nav implements OnInit{
         this.creds = {};
       },
       error: error => {
-        console.log(error)
         this.toast.error(error.error);
       },
       complete: () => this.loading.set(false)

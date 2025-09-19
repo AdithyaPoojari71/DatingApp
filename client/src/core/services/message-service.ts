@@ -6,6 +6,7 @@ import { ToastService } from './toast-service';
 import { PaginatedResult } from '../../types/pagination';
 import { Message } from '../../types/message';
 import { HubConnection, HubConnectionBuilder, HubConnectionState } from '@microsoft/signalr';
+import { PresenceSerive } from './presence-serive';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class MessageService {
   private hubUrl = environment.hubUrl;
   private http = inject(HttpClient);
   private accountService = inject(AccountService);
+  private presenceService = inject(PresenceSerive);
   private toast = inject(ToastService);
   private hubConnection?: HubConnection;
   messageThread = signal<Message[]>([]);
@@ -52,7 +54,6 @@ export class MessageService {
 
   getMessages(container: string, pageNumber: number, pageSize: number) {
     let params = new HttpParams();
-
     params = params.append('pageNumber', pageNumber);
     params = params.append('pageSize', pageSize);
     params = params.append('container', container);
@@ -71,5 +72,14 @@ export class MessageService {
 
   deleteMessage(id: string) {
     return this.http.delete(this.baseUrl + 'message/' + id);
+  }
+
+  getUnreadMsgCount(){
+     this.http.get<number>(this.baseUrl + 'message/unread-count').subscribe({
+      next: (count) => {
+        this.presenceService.unreadMessageCount.set(count); 
+      },
+      error: (err) => console.error('Failed to fetch unread count:', err)
+    }); 
   }
 }

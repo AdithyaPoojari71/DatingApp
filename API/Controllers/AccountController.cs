@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 
 namespace API.Controllers
 {
-    public class AccountController(UserManager<AppUser> userManager, ITokenService tokenService) : BaseApiController
+    public class AccountController(UserManager<AppUser> userManager, ITokenService tokenService, IWebHostEnvironment env) : BaseApiController
     {
         [HttpPost("register")] //api/account/register
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
@@ -96,7 +96,7 @@ namespace API.Controllers
             {
                 HttpOnly = true,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
+                SameSite = env.IsDevelopment() ? SameSiteMode.None : SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddDays(7)
             };
 

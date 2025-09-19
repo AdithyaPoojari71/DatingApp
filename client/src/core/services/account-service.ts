@@ -11,7 +11,7 @@ import { HubConnectionState } from '@microsoft/signalr';
   providedIn: 'root'
 })
 export class AccountService {
-private http = inject(HttpClient);
+  private http = inject(HttpClient);
   private likesService = inject(LikesService);
   private presenceService = inject(PresenceSerive);
   currentUser = signal<User | null>(null);

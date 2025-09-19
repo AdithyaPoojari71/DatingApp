@@ -60,5 +60,13 @@ namespace API.Controllers
             if (await uow.Complete()) return Ok();
             return BadRequest("Problem deleting the message");
         }
+
+        [HttpGet("unread-count")]
+        public async Task<ActionResult<int>> GetUnreadCount()
+        {
+            var memberId = User.getmemberId();
+            var count = await uow.MessageRepository.GetUnreadCountAsync(memberId);
+            return Ok(count);
+        }
     }
 }

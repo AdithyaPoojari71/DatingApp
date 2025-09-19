@@ -7,7 +7,6 @@ import { User } from '../../../types/user';
 import { ImageUpload } from "../../../shared/image-upload/image-upload";
 import { DeleteButton } from "../../../shared/delete-button/delete-button";
 import { StarButton } from "../../../shared/star-button/star-button";
-
 @Component({
   selector: 'app-member-photos',
   imports: [ImageUpload, DeleteButton, StarButton],
@@ -23,7 +22,6 @@ export class MemberPhotos {
 
   ngOnInit(): void {
     const memberId = this.route.parent?.snapshot.paramMap.get('id');
-    console.log(memberId)
     if (memberId) {
       this.memberService.getMemberPhotos(memberId).subscribe({
         next: photos => this.photos.set(photos)
@@ -43,7 +41,6 @@ export class MemberPhotos {
         }
       },
       error: error => {
-        console.log('Error uploading image: ', error);
         this.loading.set(false);
       }
     })

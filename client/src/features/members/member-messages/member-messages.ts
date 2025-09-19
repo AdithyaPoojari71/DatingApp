@@ -37,6 +37,7 @@ ngOnInit(): void {
         const otherUserId = params.get('id');
         if (!otherUserId) throw new Error('Cannot connect to hub');
         this.messageService.createHubConnection(otherUserId);
+            this.presenceService.unreadMessageCount.set(0);
       }
     })
 }

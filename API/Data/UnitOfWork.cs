@@ -8,12 +8,14 @@ namespace API.Data
         private IMemberRepository? _memberRepository;
         private IMessageRepository? _messageRepository;
         private ILikeRepository? _likeRepository;
+        private IPhotoRepository? _photoRepository;
 
         public IMemberRepository MemberRepository => _memberRepository ??= new MemberRepository(appDbContext);
 
         public IMessageRepository MessageRepository => _messageRepository ??= new MessageRespository(appDbContext);
 
         public ILikeRepository LikesRepository => _likeRepository ??= new LikesRepository(appDbContext);
+        public IPhotoRepository PhotoRepository => _photoRepository ??= new PhotoRepository(appDbContext);
 
 
         public async Task<bool> Complete()

@@ -78,7 +78,6 @@ export class Register {
           this.router.navigateByUrl('/members');
         },
         error: error => {
-          console.log(error);
           this.validationErrors.set(error)
         }
       })

@@ -79,6 +79,13 @@ namespace API.Data
             return messages;
         }
 
+        public async Task<int> GetUnreadCountAsync(string userId)
+        {
+            return await context.Messages
+            .Where(m => m.RecipientId == userId && m.DateRead == null)
+            .CountAsync();
+        }
+
         public async Task RemoveConnection(string connectionId)
         {
             await context.Connections

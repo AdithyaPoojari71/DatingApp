@@ -20,6 +20,7 @@ namespace API.Interfaces
         Task<Entities.Connection?> GetConnection(string connectionId);
         Task<Entities.Group?> GetMessageGroup(string groupName);
         Task<Entities.Group?> GetGroupForConnection(string connectionId);
+        Task<int> GetUnreadCountAsync(string userId);
 
 
     }
