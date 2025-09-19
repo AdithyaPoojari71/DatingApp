@@ -28,7 +28,6 @@ export class Nav implements OnInit{
   protected loading = signal(false);
   ngOnInit(): void {
     document.documentElement.setAttribute('data-theme',this.selectedTheme());
-    this.messageService.getUnreadMsgCount();   
   }
 
 
@@ -51,6 +50,7 @@ export class Nav implements OnInit{
     this.accountService.login(this.creds).subscribe({
       next: () => {
         this.router.navigateByUrl('/members');
+        this.messageService.getUnreadMsgCount();   
         this.toast.success("Logged in sucessfully");
         this.creds = {};
       },
