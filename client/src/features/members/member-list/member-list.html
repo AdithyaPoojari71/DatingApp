@@ -11,37 +11,36 @@
                     {{displayMessage}}
                 </div>
             </div>
-    
-            <!-- Right: Paginator -->
-            @if (paginatedResult.metadata; as metadata) {
-            <div class="self-center md:self-auto">
-                <app-paginator 
-                    [pageNumber]="metadata.currentPage" 
-                    [totalCount]="metadata.totalCount"
-                    [totalPages]="metadata.totalPages" 
-                    [pageSize]="metadata.pageSize" 
-                    (pageChange)="onPageChange($event)" />
-            </div>
-            }
         </div>
     
         <!-- Member Cards -->
         @if (paginatedResult.items; as members) {
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-1">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-2">
             @for (member of members; track member.id) {
             <app-member-card [member]="member" />
             }
         </div>
         }
+
+        <!-- Bottom: Paginator -->
+        @if (paginatedResult.metadata; as metadata) {
+        <div class="self-center md:self-auto mt-6">
+            <app-paginator 
+                [pageNumber]="metadata.currentPage" 
+                [totalCount]="metadata.totalCount"
+                [totalPages]="metadata.totalPages" 
+                [pageSize]="metadata.pageSize" 
+                (pageChange)="onPageChange($event)" />
+        </div>
+        }
     </div>
-    }
-    
-    <!-- Filter Modal -->
-    <app-filter-model 
-        #filterModal 
-        [hidden]="!paginatedMembers()" 
-        (closeModal)="onClose()" 
-        (submitData)="onFilterChange($event)" 
-        [memberParams]="memberParams">
-    </app-filter-model>
-    
+}
+
+<!-- Filter Modal -->
+<app-filter-model 
+    #filterModal 
+    [hidden]="!paginatedMembers()" 
+    (closeModal)="onClose()" 
+    (submitData)="onFilterChange($event)" 
+    [memberParams]="memberParams">
+</app-filter-model>

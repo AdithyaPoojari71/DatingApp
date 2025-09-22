@@ -1,8 +1,8 @@
 @if(memberService.member(); as member){
-    <div class="flex gap-6">
-        <div class="card bg-base-100 flex flex-col h-[85vh] w-1/4">
+    <div class="flex flex-col md:flex-row gap-6">
+        <div class="card bg-base-100 flex flex-col h-auto md:h-[85vh] w-full md:w-1/4 mb-4 md:mb-0">
             <img src="{{member.imageUrl || '/user.png'}}" alt="image of member"
-                class="rounded-full mx-10 mt-3 object-cover">
+                class="rounded-full mx-auto mt-3 object-cover w-32 h-32 md:w-auto md:h-auto">
             <div class="card-body">
                 <div class="flex flex-col items-center">
                     <div class="flex text-2xl text-primary items-center">
@@ -35,9 +35,9 @@
             </div>
         </div>
     
-        <div class="card bg-base-100 w-3/4 p-6 flex flex-col h-[85vh]">
-            <div class="flex justify-between items-center">
-                <h3 class="card-title text-3xl text-primary">{{title()}}</h3>
+        <div class="card bg-base-100 w-full md:w-3/4 p-4 md:p-6 flex flex-col h-auto md:h-[85vh]">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-2">
+                <h3 class="card-title text-2xl md:text-3xl text-primary">{{title()}}</h3>
                 @if (isCurrentUser()) {
                 <button (click)="memberService.editMode.set(!memberService.editMode())" class="btn btn-outline btn-primary">
                     {{memberService.editMode() ? 'Cancel' : 'Edit'}}
@@ -52,6 +52,6 @@
         </div>
     
     </div>
-    } @else {
+} @else {
     <div>Member not found</div>
-    }
+}

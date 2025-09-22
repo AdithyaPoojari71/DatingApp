@@ -8,10 +8,11 @@ import { BusyService } from '../../core/services/busy-service';
 import { HasRole } from '../../shared/directives/has-role';
 import { MessageService } from '../../core/services/message-service';
 import { PresenceSerive } from '../../core/services/presence-serive';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-nav',
-  imports: [FormsModule,RouterLink,RouterLinkActive,HasRole],
+  imports: [FormsModule,RouterLink,RouterLinkActive,HasRole,CommonModule],
   templateUrl: './nav.html',
   styleUrl: './nav.css'
 })
@@ -26,6 +27,8 @@ export class Nav implements OnInit{
   protected selectedTheme = signal<string>(localStorage.getItem('theme') || 'light');
   protected themes = themes;
   protected loading = signal(false);
+  protected isMobileMenuOpen = signal(false);
+
   ngOnInit(): void {
     document.documentElement.setAttribute('data-theme',this.selectedTheme());
   }
@@ -64,5 +67,9 @@ export class Nav implements OnInit{
   logout(){
     this.accountService.logout();
     this.router.navigateByUrl('/');
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen.set(!this.isMobileMenuOpen());
   }
 }
