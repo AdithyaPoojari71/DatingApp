@@ -89,7 +89,6 @@ export class AccountService {
   }
 
   forgotPassword(forgotPassword: ResetPassword) {
-    console.log(forgotPassword);
     return this.http.post(this.baseUrl + 'account/forgot-password', forgotPassword, { withCredentials: true });
   }
 

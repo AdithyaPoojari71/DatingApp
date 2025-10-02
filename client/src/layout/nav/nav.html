@@ -147,7 +147,8 @@
 </header>
 
 <!-- Login Modal -->
-<div *ngIf="showLoginModal()" class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+@if (showLoginModal()) {
+<div class="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
 
   <!-- Modal Content -->
   <div class="bg-white p-6 rounded-lg w-96 relative shadow-lg">
@@ -159,3 +160,4 @@
     </button>
   </div>
 </div>
+}

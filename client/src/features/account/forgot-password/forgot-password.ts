@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -21,6 +21,7 @@ export class ForgotPassword {
   private toast = inject(ToastService);
   private fb = inject(FormBuilder);
   isSubmitting = false;
+  @Output() close = new EventEmitter<void>();
 
   constructor() {
     this.forgotPasswordForm = this.fb.group(
@@ -61,6 +62,7 @@ export class ForgotPassword {
       next: () => {
         this.isSubmitting = false;
         this.forgotPasswordForm.reset();
+        this.close.emit();
         this.toast.success('Password has been reset successfully.');
       },
       error: (err) => {

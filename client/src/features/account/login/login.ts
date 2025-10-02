@@ -9,10 +9,11 @@ import { AccountService } from '../../../core/services/account-service';
 import { MessageService } from '../../../core/services/message-service';
 import { Router } from '@angular/router';
 import { ToastService } from '../../../core/services/toast-service';
+import { ForgotPassword } from '../forgot-password/forgot-password';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, ForgotPassword],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -25,6 +26,7 @@ export class Login {
   private fb = inject(FormBuilder);
   private accountService = inject(AccountService);
   @Output() close = new EventEmitter<void>();
+  showForgotPassword = false;
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -48,15 +50,19 @@ export class Login {
       },
       error: (error) => {
         this.toast.error(error.error);
-      },
-      complete: () => {
         this.isSubmitting = false;
         this.loginForm.reset();
       },
     });
   }
 
-  openForgotPassword() {
-    // open your forgot-password modal here
+  openForgotPassword(event: Event) {
+    event.preventDefault(); // prevent default link navigation
+    this.showForgotPassword = true;
+  }
+
+  closeForgotPassword() {
+    this.showForgotPassword = false;
+    this.close.emit();
   }
 }
