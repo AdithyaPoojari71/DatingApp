@@ -12,8 +12,17 @@ import { AccountService } from '../../core/services/account-service';
 export class Home {
   protected registerMode = signal(false);
   protected accountService = inject(AccountService);
+  showForgotPassword = false;
 
   showRegister(value: boolean){
     this.registerMode.set(value);
+  }
+
+  openForgotPassword() {
+    this.showForgotPassword = true;
+  }
+
+  closeForgotPassword() {
+    this.showForgotPassword = false;
   }
 }

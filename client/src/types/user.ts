@@ -21,3 +21,9 @@ export type RegisterCreds = {
     city:string,
     country:string
 }
+
+export type ResetPassword = {
+    email: string;
+    newPassword: string;
+    ConfirmPassword: string;
+}

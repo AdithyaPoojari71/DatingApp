@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
-import { LoginCreds, RegisterCreds, User } from '../../types/user';
+import { ResetPassword, LoginCreds, RegisterCreds, User } from '../../types/user';
 import { tap } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { LikesService } from './likes-service';
@@ -86,6 +86,11 @@ export class AccountService {
     const decoded = atob(payload);
     const jsonPayload = JSON.parse(decoded);
     return Array.isArray(jsonPayload.role) ? jsonPayload.role : [jsonPayload.role]
+  }
+
+  forgotPassword(forgotPassword: ResetPassword) {
+    console.log(forgotPassword);
+    return this.http.post(this.baseUrl + 'account/forgot-password', forgotPassword, { withCredentials: true });
   }
 
 }

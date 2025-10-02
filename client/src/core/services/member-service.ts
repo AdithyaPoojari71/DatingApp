@@ -14,7 +14,6 @@ export class MemberService {
   editMode = signal(false);
   member = signal<Member | null>(null);
 
-
   getMembers(memberParams: MemberParams){
     let params = new HttpParams();
 

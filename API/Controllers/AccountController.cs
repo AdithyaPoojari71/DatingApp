@@ -118,5 +118,21 @@ namespace API.Controllers
 
             return Ok();
         }
+
+        [HttpPost("forgot-password")]
+        [AllowAnonymous]
+        public async Task<ActionResult> ForgotPassword(ResetPasswordDto resetPasswordDto)
+        {
+            var user = await userManager.FindByEmailAsync(resetPasswordDto.Email);
+            if (user == null) return Unauthorized("Invalid email address");
+
+            if (resetPasswordDto.NewPassword != resetPasswordDto.ConfirmPassword)
+                return BadRequest("Passwords do not match");
+
+            user.PasswordHash = userManager.PasswordHasher.HashPassword(user, resetPasswordDto.NewPassword);
+            await userManager.UpdateAsync(user);
+            return Ok(new { message = "Password has been reset successfully" });
+
+        }
     }
 }

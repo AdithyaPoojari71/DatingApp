@@ -30,6 +30,32 @@ namespace API.SignalR
             await base.OnDisconnectedAsync(exception);
         }
 
+        //Typing notification methods
+        public async Task SendTypingNotification(string recipientId)
+        {
+            var senderId = Context.UserIdentifier;
+            if (!string.IsNullOrEmpty(senderId) && !string.IsNullOrEmpty(recipientId))
+            {
+                await Clients.User(recipientId).SendAsync("UserTyping", new
+                {
+                    SenderId = senderId,
+                    Timestamp = DateTime.UtcNow
+                });
+            }
+        }
+
+        public async Task SendStopTypingNotification(string recipientId)
+        {
+            var senderId = Context.UserIdentifier;
+            if (!string.IsNullOrEmpty(senderId) && !string.IsNullOrEmpty(recipientId))
+            {
+                await Clients.User(recipientId).SendAsync("UserStoppedTyping", new
+                {
+                    SenderId = senderId
+                });
+            }
+        }
+
         private string GetUserId()
         {
             return Context.User?.getmemberId() ?? throw new Exception("Could not get user id - PresenceHub");

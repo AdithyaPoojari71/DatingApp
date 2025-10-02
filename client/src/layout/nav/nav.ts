@@ -9,67 +9,68 @@ import { HasRole } from '../../shared/directives/has-role';
 import { MessageService } from '../../core/services/message-service';
 import { PresenceSerive } from '../../core/services/presence-serive';
 import { CommonModule } from '@angular/common';
+import { Login } from '../../features/account/login/login';
 
 @Component({
   selector: 'app-nav',
-  imports: [FormsModule,RouterLink,RouterLinkActive,HasRole,CommonModule],
+  imports: [
+    FormsModule,
+    RouterLink,
+    RouterLinkActive,
+    HasRole,
+    CommonModule,
+    Login,
+  ],
   templateUrl: './nav.html',
-  styleUrl: './nav.css'
+  styleUrl: './nav.css',
 })
-export class Nav implements OnInit{
+export class Nav implements OnInit {
   protected accountService = inject(AccountService);
   protected busyService = inject(BusyService);
   protected messageService = inject(MessageService);
   protected presenceService = inject(PresenceSerive);
   protected router = inject(Router);
   private toast = inject(ToastService);
-  protected creds: any = {}
-  protected selectedTheme = signal<string>(localStorage.getItem('theme') || 'light');
+  protected creds: any = {};
+  protected selectedTheme = signal<string>(
+    localStorage.getItem('theme') || 'light'
+  );
   protected themes = themes;
   protected loading = signal(false);
   protected isMobileMenuOpen = signal(false);
+  protected showLoginModal = signal(false);
 
   ngOnInit(): void {
-    document.documentElement.setAttribute('data-theme',this.selectedTheme());
+    document.documentElement.setAttribute('data-theme', this.selectedTheme());
   }
 
-
-  handleSelectTheme(theme: string){
+  handleSelectTheme(theme: string) {
     this.selectedTheme.set(theme);
-    localStorage.setItem('them',theme);
-    document.documentElement.setAttribute('data-theme',theme);
+    localStorage.setItem('them', theme);
+    document.documentElement.setAttribute('data-theme', theme);
     const ele = document.activeElement as HTMLDivElement;
-    if(ele) ele.blur();
+    if (ele) ele.blur();
   }
 
-  handleSelectUserItem(){
+  handleSelectUserItem() {
     const ele = document.activeElement as HTMLDivElement;
-    if(ele) ele.blur();
+    if (ele) ele.blur();
   }
 
-
-  login(){
-    this.loading.set(true);
-    this.accountService.login(this.creds).subscribe({
-      next: () => {
-        this.router.navigateByUrl('/members');
-        this.messageService.getUnreadMsgCount();   
-        this.toast.success("Logged in sucessfully");
-        this.creds = {};
-      },
-      error: error => {
-        this.toast.error(error.error);
-      },
-      complete: () => this.loading.set(false)
-    })
-  }
-
-  logout(){
+  logout() {
     this.accountService.logout();
     this.router.navigateByUrl('/');
   }
 
   toggleMobileMenu() {
     this.isMobileMenuOpen.set(!this.isMobileMenuOpen());
+  }
+
+  openLoginModal() {
+    this.showLoginModal.set(true);
+  }
+
+  closeLoginModal() {
+    this.showLoginModal.set(false);
   }
 }
